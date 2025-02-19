@@ -7,6 +7,8 @@ GPT_4O_MINI = "gpt-4o-mini"
 GPT_4_TURBO = "gpt-4-turbo"
 GPT_4 = "gpt-4"
 
+MODEL_CHOICES = [GPT_4O, GPT_4O_MINI, GPT_4_TURBO, GPT_4]
+
 
 def main() -> None:
     print("Hello from tokenizer!")
@@ -19,7 +21,10 @@ def main() -> None:
 
     is_verbose = args.verbose
 
-    ignored_filetypes: list[str] = args.ignore
+    if args.ignore is not None:
+        ignored_filetypes: list[str] = args.ignore
+    else:
+        ignored_filetypes: list[str] = []
 
     root = Path(args.directory)
     if not root.is_dir():
@@ -98,6 +103,13 @@ def setup_argparse() -> argparse.ArgumentParser:
         "--ignore",
         action="append",
         help="specify file formats to ignore from counting. this flag may be set multiple times for multiple entries",
+    )
+    parser.add_argument(
+        "-m--model",
+        action="store",
+        help="specify a model to use for token approximation. default is 'gpt-4o'",
+        choices=MODEL_CHOICES,
+        default=GPT_4O,
     )
     return parser
 
