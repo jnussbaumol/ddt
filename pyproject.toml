@@ -1,7 +1,7 @@
 [project]
 name = "tokenizer"
 version = "0.1.0"
-description = "Add your description here"
+description = "A CLI tool that crawls a directory and counts the tokens per filetype"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
