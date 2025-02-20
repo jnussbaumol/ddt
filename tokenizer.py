@@ -21,10 +21,15 @@ def main() -> None:
 
     is_verbose = args.verbose
 
-    if args.ignore is not None:
-        ignored_filetypes: list[str] = args.ignore
+    if args.exclude is not None:
+        excluded_filetypes: list[str] = args.exclude
     else:
-        ignored_filetypes: list[str] = []
+        excluded_filetypes: list[str] = []
+
+    if args.include is not None:
+        included_filetypes: list[str] = args.include
+    else:
+        included_filetypes: list[str] = []
 
     root = Path(args.directory)
     if not root.is_dir():
@@ -47,13 +52,13 @@ def main() -> None:
             continue
         filename = file.name
         filetype = file.suffix[1:]
-        if filetype in ignored_filetypes:
+        if filetype in excluded_filetypes or filetype not in included_filetypes:
             continue
         print_if_verbose(f"reading {filename}", is_verbose)
         try:
             text = file.read_text()
         except UnicodeDecodeError:
-            ignored_filetypes.append(filetype)
+            excluded_filetypes.append(filetype)
             print(f"file {file.name} hit unicode error, ignoring from now on")
             continue
         token_counts = num_tokens_from_string(text, GPT_4O)
@@ -81,7 +86,7 @@ def setup_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="Tokenizer",
         description="Crawls a given directory, counts the number of tokens per filetype in the project and returns a per-type total and grand total",
-        epilog="0x4D5352",
+        epilog="Made with <3 by 0x4D5352",
     )
     parser.add_argument(
         "directory",
@@ -98,11 +103,18 @@ def setup_argparse() -> argparse.ArgumentParser:
         action="store_true",
         help="ignore directories and files with 'old' in the name.",
     )
-    parser.add_argument(
-        "-i",
-        "--ignore",
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
+        "-e",
+        "--exclude",
         action="append",
-        help="specify file formats to ignore from counting. this flag may be set multiple times for multiple entries",
+        help="specify file formats to ignore from counting. this flag may be set multiple times for multiple entries. cannot be set if including files",
+    )
+    group.add_argument(
+        "-i",
+        "--include",
+        action="append",
+        help="specify file formats to include when counting. this flag may be set multiple times for multiple entries. cannot bet set if excluding files",
     )
     parser.add_argument(
         "-m--model",
