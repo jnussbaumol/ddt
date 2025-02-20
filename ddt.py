@@ -52,7 +52,9 @@ def main() -> None:
             continue
         filename = file.name
         filetype = file.suffix[1:]
-        if filetype in excluded_filetypes or filetype not in included_filetypes:
+        if (filetype in excluded_filetypes or filetype not in included_filetypes) and (
+            len(included_filetypes) > 0 or len(excluded_filetypes) > 0
+        ):
             continue
         print_if_verbose(f"reading {filename}", is_verbose)
         try:
