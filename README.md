@@ -1,5 +1,7 @@
 # DDT (Directory Diving Tokenizer)
 
+![A GIF showing DDT running on the curl source code](./assets/demo.gif)
+
 This is a CLI written in python (and rewritten in golang if i have time) that
 will scan a directory and count the number of tokens per text file, subdivided
 by filetype. Useful for figuring out how difficult it will be for a Large
